@@ -2,6 +2,12 @@
 name = "installed_pkg"
 version = "0.1.0"
 edition = "2021"
+license = "MIT OR Apache-2.0"
+description = "A simple cross-platform crate that lists all the apps installed on a system."
+keywords = ["installed", "app", "application", "pkg"]
+categories = ["os","os::windows-apis", "os::linux-apis", "os::macos-apis"]
+authors = ["JK Guo <guojikun486546@163.com>"]
+repository = "https://github.com/GuoJikun/installed_pkg"
 
-[dependencies]
+[target.'cfg(windows)'.dependencies]
 winreg = "0.52.0"
