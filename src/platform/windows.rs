@@ -1,8 +1,9 @@
+use serde::{Serialize, Deserialize};
 use winreg::enums::*;
 use winreg::reg_key::RegKey;
 use winreg::HKEY;
 
-#[derive(Debug,Clone)]
+#[derive(Serialize, Deserialize, Clone)]
 pub struct App {
     pub name: String,
     pub version: String,
