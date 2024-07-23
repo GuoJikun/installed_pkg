@@ -2,6 +2,7 @@ use winreg::enums::*;
 use winreg::reg_key::RegKey;
 use winreg::HKEY;
 
+#[derive(Debug,Clone)]
 pub struct App {
     pub name: String,
     pub version: String,
