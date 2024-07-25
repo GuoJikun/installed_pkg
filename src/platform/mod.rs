@@ -10,4 +10,4 @@ mod installed_pkg;
 #[path = "linux.rs"]
 mod installed_pkg;
 
-pub use installed_pkg::App;
+pub use installed_pkg::Installed;

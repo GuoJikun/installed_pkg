@@ -3,8 +3,9 @@ use serde::{Serialize, Deserialize};
 #[derive(Serialize, Deserialize)]
 pub struct App {
     pub name: String,
-    pub version: String,
-    pub publisher: String,
+    pub root: String,
+    pub bin: String,
+    pub icon: String,
 }
 
 struct AppList {
@@ -23,16 +24,46 @@ impl App {
         &self.name
     }
 
-    pub fn version(&self) -> &str {
-        &self.version
+    pub fn root(&self) -> &str {
+        &self.root
     }
 
-    pub fn publisher(&self) -> &str {
-        &self.publisher
+    pub fn bin(&self) -> &str {
+        &self.bin
     }
 
-    pub fn new() -> Result<Vec<App>, String> {
-        let mut apps: Vec<App> = Vec::new();
-        Ok(apps)
+    pub fn icon(&self) -> &str {
+        &self.icon
+    }
+
+}
+#[derive(Serialize, Deserialize, Clone)]
+pub struct Installed {
+    pub apps: Vec<App>,
+    pub apps_sys: Vec<App>,
+    pub apps_user: Vec<App>,
+}
+impl Default for Installed {
+    fn default() -> Self {
+        Self {
+            apps: Vec::new(),
+            apps_sys: Vec::new(),
+            apps_user: Vec::new(),
+        }
+    }
+}
+impl Installed {
+    pub fn new() -> Self {
+        let apps_sys: Vec<App> = Vec::new();
+        
+        let apps_user: Vec<App> = Vec::new();
+        
+        let apps: Vec<App> = Vec::new();
+        
+        Installed {
+            apps,
+            apps_sys,
+            apps_user,
+        }
     }
 }

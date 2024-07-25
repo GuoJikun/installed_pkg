@@ -1,6 +1,6 @@
 mod platform;
-pub use platform::App;
+pub use platform::Installed;
 
-pub fn list() -> Result<Vec<App>, String> {
-    App::new()
+pub fn list() -> Result<Installed, String> {
+    Ok(Installed::new())
 }
