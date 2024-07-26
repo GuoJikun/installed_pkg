@@ -11,3 +11,5 @@ mod installed_pkg;
 mod installed_pkg;
 
 pub use installed_pkg::Installed;
+pub use installed_pkg::App;
+pub use installed_pkg::AppList;

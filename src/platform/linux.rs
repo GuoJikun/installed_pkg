@@ -8,8 +8,18 @@ pub struct App {
     pub icon: String,
 }
 
-struct AppList {
+#[derive(Serialize, Deserialize, Clone)]
+pub struct AppList {
     pub installed_apps: Vec<App>,
+}
+
+impl Default for AppList {
+    fn default() -> Self {
+        Self {
+            installed_apps: Vec::new(),
+        }
+    }
+    
 }
 impl AppList {
     pub fn new() -> Self {

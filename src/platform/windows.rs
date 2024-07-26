@@ -15,7 +15,8 @@ pub struct App {
     pub icon: String,
 }
 
-struct AppList {
+#[derive(Serialize, Deserialize, Clone)]
+pub struct AppList {
     pub installed_apps: Vec<App>,
 }
 
