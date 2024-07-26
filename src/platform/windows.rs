@@ -155,12 +155,9 @@ impl AppList {
                                 // 处理 .lnk 文件
                                 match AppList::resolve_lnk_target(&file_path) {
                                     Some(tmp) => {
-                                        println!("binnary path: {:?}", tmp);
                                         app_paths.push(tmp);
                                     },
-                                    None => {
-                                        println!("None inside")
-                                    },
+                                    None => { },
                                 }
                             } 
                         }
@@ -176,12 +173,9 @@ impl AppList {
                     // 处理 .lnk 文件
                     match AppList::resolve_lnk_target(&file_path) {
                         Some(tmp) => {
-                            println!("binnary path: {:?}", tmp);
                             app_paths.push(tmp);
                         },
-                        None => {
-                            println!("None outside")
-                        },
+                        None => { },
                     }
                 } 
             }
