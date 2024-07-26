@@ -39,7 +39,7 @@ impl AppList {
             .unwrap();
         
         let app_paths = AppList::get_apps_path(&hklm, path);
-        // println!("App Paths: {:?}", app_paths);
+
         // Get all subkeys (each represents an installed software)
         let subkeys: Vec<String> = software_key.enum_keys().map(|x| x.unwrap()).collect();
 
@@ -68,8 +68,6 @@ impl AppList {
 
             let mut bin = String::from("");
              for path in &app_paths {
-                // println!("Root: {}", install_location);
-                // println!("Bin: {}", path.display());
                 let tmp_path = path.display().to_string();
                 if tmp_path.contains(&install_location) {
                     bin = tmp_path;
@@ -115,14 +113,15 @@ impl AppList {
             },
         }
         // todo: 从开始菜单拿到快捷方式对应的可执行程序路径
-        // 由于使用 lnk 库解析快捷方式时，会出现错误，所以暂时不启用
-        // let startmenu_app_bins = AppList::get_apps_path_by_startmenu();
-        // return app_paths.into_iter().chain(startmenu_app_bins).collect();
-        return app_paths
+        let startmenu_app_bins = AppList::get_apps_path_by_startmenu();
+        return app_paths.into_iter().chain(startmenu_app_bins).collect();
     }
     /// 解析 .lnk 文件的目标路径
     fn resolve_lnk_target(lnk_path: &Path) -> Option<PathBuf> {
-        println!("lnk path: {:?}", lnk_path);
+        // 过滤掉 Windows PowerShell 的快捷方式, 等待 lnk crate 修复
+        if lnk_path.display().to_string().contains("Windows PowerShell") {
+            return None;
+        }
         // 使用 ShellLink:: 读取快捷方式
         match ShellLink::open(lnk_path) {
             Ok(shell_link) => {

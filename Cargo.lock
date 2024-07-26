@@ -98,7 +98,7 @@ dependencies = [
 
 [[package]]
 name = "installed_pkg"
-version = "0.1.2"
+version = "0.2.0"
 dependencies = [
  "lnk",
  "serde",

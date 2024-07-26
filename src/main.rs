@@ -121,7 +121,10 @@ impl AppList {
 
 /// 解析 .lnk 文件的目标路径
 fn resolve_lnk_target(lnk_path: &Path) -> Option<PathBuf> {
-    println!("lnk path: {:?}", lnk_path);
+    // 过滤掉 Windows PowerShell 的快捷方式, 等待 lnk crate 修复
+    if lnk_path.display().to_string().contains("Windows PowerShell") {
+        return None;
+    }
     // 使用 ShellLink:: 读取快捷方式
     match ShellLink::open(lnk_path) {
         Ok(shell_link) => {
