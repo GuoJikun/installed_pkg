@@ -1,6 +1,6 @@
 [package]
 name = "installed_pkg"
-version = "0.3.1"
+version = "0.3.2"
 edition = "2021"
 license = "MIT OR Apache-2.0"
 description = "A simple cross-platform crate that lists all the apps installed on a system."
@@ -20,7 +20,7 @@ include = [
 [dependencies]
 serde = { version = "1.0", features = ["derive"] }
 
-[target.'cfg(windows)'.dependencies]
+[target.'cfg(target_os = "windows")'.dependencies]
 winreg = "0.52.0"
 lnk = "0.5.1"
 

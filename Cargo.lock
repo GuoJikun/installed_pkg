@@ -135,7 +135,7 @@ dependencies = [
 
 [[package]]
 name = "installed_pkg"
-version = "0.3.1"
+version = "0.3.2"
 dependencies = [
  "lnk",
  "plist",
