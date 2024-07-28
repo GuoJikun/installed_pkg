@@ -7,7 +7,7 @@ use winreg::enums::*;
 use winreg::reg_key::RegKey;
 use winreg::HKEY;
 
-#[derive(Serialize, Deserialize, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct App {
     pub name: String,
     pub root: String,
@@ -15,7 +15,7 @@ pub struct App {
     pub icon: String,
 }
 
-#[derive(Serialize, Deserialize, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct AppList {
     pub installed_apps: Vec<App>,
 }
@@ -26,19 +26,13 @@ impl Default for AppList {
             installed_apps: Vec::new(),
         }
     }
-    
 }
 
 impl AppList {
     pub fn new(hive: HKEY, path: &str) -> AppList {
         let hklm = RegKey::predef(hive);
-        let software_key = hklm
-            .open_subkey_with_flags(
-                path,
-                KEY_READ,
-            )
-            .unwrap();
-        
+        let software_key = hklm.open_subkey_with_flags(path, KEY_READ).unwrap();
+
         let app_paths = AppList::get_apps_path(&hklm, path);
 
         // Get all subkeys (each represents an installed software)
@@ -49,7 +43,6 @@ impl AppList {
 
         // Iterate over each subkey to get name and install location
         for key in subkeys {
-            
             let app_key = software_key.open_subkey(&key).unwrap();
             let name: String = app_key
                 .get_value("DisplayName")
@@ -62,56 +55,52 @@ impl AppList {
                 .get_value("DisplayIcon")
                 .unwrap_or_else(|_| String::from(""));
 
-
             if name.is_empty() || install_location.is_empty() {
                 continue;
             }
 
             let mut bin = String::from("");
-             for path in &app_paths {
+            for path in &app_paths {
                 let tmp_path = path.display().to_string();
                 if tmp_path.contains(&install_location) {
                     bin = tmp_path;
                     break;
                 }
             }
-            
+
             // Add software to the list
             installed_apps.push(App {
                 name,
                 root: install_location,
                 bin,
-                icon: if icon.ends_with(".ico")  {icon} else {String::from("")}
+                icon: if icon.ends_with(".ico") {
+                    icon
+                } else {
+                    String::from("")
+                },
             });
         }
 
         AppList { installed_apps }
     }
-    fn get_apps_path (hklm: &RegKey, path: &str)-> Vec<PathBuf> {
+    fn get_apps_path(hklm: &RegKey, path: &str) -> Vec<PathBuf> {
         let mut app_paths: Vec<PathBuf> = Vec::new();
-        match hklm.open_subkey_with_flags(
-                    path.replace("Uninstall", "App Paths"),
-                    KEY_READ,
-                ) {
+        match hklm.open_subkey_with_flags(path.replace("Uninstall", "App Paths"), KEY_READ) {
             Ok(app_paths_key) => {
                 // Iterate over subkeys (each representing an installed application)
-                let subkeys: Vec<String> = app_paths_key
-                    .enum_keys()
-                    .map(|x| x.unwrap())
-                    .collect();
+                let subkeys: Vec<String> = app_paths_key.enum_keys().map(|x| x.unwrap()).collect();
 
                 for key in subkeys {
                     if let Ok(app_key) = app_paths_key.open_subkey(&key) {
-                        
                         if let Ok(path) = app_key.get_raw_value("") {
                             app_paths.push(PathBuf::from(path.to_string()));
                         }
                     }
                 }
-            },
+            }
             Err(_) => {
                 // println!("App Paths not found");
-            },
+            }
         }
         // todo: 从开始菜单拿到快捷方式对应的可执行程序路径
         let startmenu_app_bins = AppList::get_apps_path_by_startmenu();
@@ -120,24 +109,24 @@ impl AppList {
     /// 解析 .lnk 文件的目标路径
     fn resolve_lnk_target(lnk_path: &Path) -> Option<PathBuf> {
         // 过滤掉 Windows PowerShell 的快捷方式, 等待 lnk crate 修复
-        if lnk_path.display().to_string().contains("Windows PowerShell") {
+        if lnk_path
+            .display()
+            .to_string()
+            .contains("Windows PowerShell")
+        {
             return None;
         }
         // 使用 ShellLink:: 读取快捷方式
         match ShellLink::open(lnk_path) {
-            Ok(shell_link) => {
-                match shell_link.link_info() {
-                    Some(link_info) => {
-                        return link_info.local_base_path().clone().map(PathBuf::from);
-                    },
-                    _ => {
-                        return None;
-                    },
+            Ok(shell_link) => match shell_link.link_info() {
+                Some(link_info) => {
+                    return link_info.local_base_path().clone().map(PathBuf::from);
+                }
+                _ => {
+                    return None;
                 }
             },
-            Err(_) => {
-                return None
-            },
+            Err(_) => return None,
         };
     }
     fn traverse_dir(dir_path: &Path, app_paths: &mut Vec<PathBuf>) {
@@ -156,10 +145,10 @@ impl AppList {
                                 match AppList::resolve_lnk_target(&file_path) {
                                     Some(tmp) => {
                                         app_paths.push(tmp);
-                                    },
-                                    None => { },
+                                    }
+                                    None => {}
                                 }
-                            } 
+                            }
                         }
                     }
                 }
@@ -168,16 +157,16 @@ impl AppList {
             let entry = fs::read_link(dir_path).expect("Failed to read link");
             let file_path = entry.as_path();
             // 检查文件扩展名
-            if let Some(extension) = file_path.extension() {      
+            if let Some(extension) = file_path.extension() {
                 if extension == "lnk" {
                     // 处理 .lnk 文件
                     match AppList::resolve_lnk_target(&file_path) {
                         Some(tmp) => {
                             app_paths.push(tmp);
-                        },
-                        None => { },
+                        }
+                        None => {}
                     }
-                } 
+                }
             }
         }
     }
@@ -208,7 +197,7 @@ impl App {
     }
 }
 
-#[derive(Serialize, Deserialize, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Installed {
     pub apps: Vec<App>,
     pub apps_sys: Vec<App>,
@@ -244,12 +233,24 @@ impl Installed {
             HKEY_CURRENT_USER,
             "SOFTWARE\\Wow6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall",
         );
-        let apps_sys: Vec<App> = Vec::new().into_iter().chain(system_apps.installed_apps).chain(system_apps_32.installed_apps).collect();
-        
-        let apps_user: Vec<App> = Vec::new().into_iter().chain(user_apps.installed_apps).chain(user_apps_32.installed_apps).collect();
-        
-        let apps: Vec<App> = Vec::new().into_iter().chain(apps_sys.clone()).chain(apps_user.clone()).collect();
-        
+        let apps_sys: Vec<App> = Vec::new()
+            .into_iter()
+            .chain(system_apps.installed_apps)
+            .chain(system_apps_32.installed_apps)
+            .collect();
+
+        let apps_user: Vec<App> = Vec::new()
+            .into_iter()
+            .chain(user_apps.installed_apps)
+            .chain(user_apps_32.installed_apps)
+            .collect();
+
+        let apps: Vec<App> = Vec::new()
+            .into_iter()
+            .chain(apps_sys.clone())
+            .chain(apps_user.clone())
+            .collect();
+
         Installed {
             apps,
             apps_sys,

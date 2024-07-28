@@ -6,7 +6,7 @@ use std::{
 
 use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct App {
     pub name: String,
     pub root: String,
@@ -53,7 +53,7 @@ impl App {
         &self.icon
     }
 }
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug)]
 #[cfg_attr(apps, derive(Clone))]
 #[cfg_attr(apps_sys, derive(Clone))]
 #[cfg_attr(apps_user, derive(Clone))]
