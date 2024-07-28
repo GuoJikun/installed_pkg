@@ -1,14 +1,21 @@
 [package]
 name = "installed_pkg"
-version = "0.2.3"
+version = "0.3.0"
 edition = "2021"
 license = "MIT OR Apache-2.0"
 description = "A simple cross-platform crate that lists all the apps installed on a system."
 keywords = ["installed", "app", "application", "pkg"]
-categories = ["os","os::windows-apis", "os::linux-apis", "os::macos-apis"]
+categories = ["os", "os::windows-apis", "os::linux-apis", "os::macos-apis"]
 authors = ["JK Guo <guojikun486546@163.com>"]
 repository = "https://github.com/GuoJikun/installed_pkg"
-include = ["src/platform/*", "src/lib.rs", "Cargo.toml", "README.md", "LICENSE-Apache", "LICENSE-MIT"]
+include = [
+    "src/platform/*",
+    "src/lib.rs",
+    "Cargo.toml",
+    "README.md",
+    "LICENSE-Apache",
+    "LICENSE-MIT",
+]
 
 [dependencies]
 serde = { version = "1.0", features = ["derive"] }
@@ -16,3 +23,6 @@ serde = { version = "1.0", features = ["derive"] }
 [target.'cfg(windows)'.dependencies]
 winreg = "0.52.0"
 lnk = "0.5.1"
+
+[target.'cfg(target_os = "macos")'.dependencies]
+plist = "1.7.0"
