@@ -1,5 +1,7 @@
 # installed_pkg
 
+> Under development, do not use for official environment.
+
 A simple cross-platform crate that lists all the apps installed on a system.
 
 ## Usage
