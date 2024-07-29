@@ -120,11 +120,6 @@ impl Installed {
                         let icon_path = app_path.join("Contents/Resources/AppIcon.icns");
 
                         // 输出应用程序信息
-                        // println!("App Name: {}", app_name);
-                        // println!("Version: {}", app_version);
-                        // println!("Executable Path: {:?}", executable_path);
-                        // println!("Icon Path: {:?}", icon_path);
-                        // println!();
                         apps.push(App {
                             name: app_name.to_string(),
                             root: app_path.to_str().unwrap().to_string(),
@@ -155,18 +150,12 @@ impl Installed {
         match plist::Value::from_reader(reader) {
             Ok(plist::Value::Dictionary(dict)) => {
                 // 在这里处理字典类型的 plist 数据
-                for (key, value) in &dict {
-                    println!("Key: {}", key);
-                    println!("Value: {:?}", value);
-                }
                 return Ok(plist::Value::Dictionary(dict));
             }
             Ok(other) => {
-                println!("Unexpected plist format: {:?}", other);
                 return Ok(other);
             }
             Err(e) => {
-                eprintln!("Error parsing plist file: {}", e);
                 return Err(e);
             }
         }

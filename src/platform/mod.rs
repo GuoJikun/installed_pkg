@@ -1,15 +1,15 @@
 #[cfg(target_os = "macos")]
 #[path = "macos.rs"]
-mod installed_pkg;
+mod platform;
 
 #[cfg(target_os = "windows")]
 #[path = "windows.rs"]
-mod installed_pkg;
+mod platform;
 
 #[cfg(target_os = "linux")]
 #[path = "linux.rs"]
-mod installed_pkg;
+mod platform;
 
-pub use installed_pkg::Installed;
-pub use installed_pkg::App;
-pub use installed_pkg::AppList;
+pub use platform::Installed;
+pub use platform::App;
+pub use platform::AppList;

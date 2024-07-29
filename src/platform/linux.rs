@@ -1,6 +1,6 @@
 use serde::{Serialize, Deserialize};
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct App {
     pub name: String,
     pub root: String,
@@ -8,7 +8,7 @@ pub struct App {
     pub icon: String,
 }
 
-#[derive(Serialize, Deserialize, Clone)]
+#[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct AppList {
     pub installed_apps: Vec<App>,
 }
@@ -46,7 +46,7 @@ impl App {
         &self.icon
     }
 }
-#[derive(Serialize, Deserialize, Clone)]
+#[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct Installed {
     pub apps: Vec<App>,
     pub apps_sys: Vec<App>,
